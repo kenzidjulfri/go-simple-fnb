@@ -131,8 +131,8 @@ func (s *BaseServiceImpl) updatePrinters(printers map[string]string, usage strin
 	return printers
 }
 
-func (s *BaseServiceImpl) GetBill(tableId uint) (*response.BillResponse, error) {
-	order, err := s.orderRepo.GetByTableID(*s.db, tableId)
+func (s *BaseServiceImpl) GetBill(id uint) (*response.BillResponse, error) {
+	order, err := s.orderRepo.GetByID(*s.db, id)
 	if err != nil {
 		return nil, err
 	}

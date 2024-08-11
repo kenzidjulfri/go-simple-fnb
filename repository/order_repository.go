@@ -7,7 +7,7 @@ import (
 
 // single responsibility principle
 type OrderRepository interface {
-	GetByTableID(db gorm.DB, tableId uint) (model.Order, error)
+	GetByID(db gorm.DB, id uint) (model.Order, error)
 	Create(db gorm.DB, data *model.Order) error
 	Update(db gorm.DB, data *model.Order) error
 	Delete(db gorm.DB, id uint) error
@@ -25,9 +25,9 @@ func GetOrderRepository() OrderRepository {
 	return OrderRepo
 }
 
-func (repo *OrderRepositoryImpl) GetByTableID(db gorm.DB, tableId uint) (model.Order, error) {
+func (repo *OrderRepositoryImpl) GetByID(db gorm.DB, id uint) (model.Order, error) {
 	var data model.Order
-	err := db.Preload("Table").Where("table_id = ?", tableId).First(&data).Error
+	err := db.Preload("Table").First(&data, id).Error
 	return data, err
 }
 
