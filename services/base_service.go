@@ -47,6 +47,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 			ItemID: detail.ItemID,
 			Qty:    detail.Qty,
 		}
+
 		switch detail.ItemType {
 		case constant.ItemBase.String():
 			product, err := s.productRepo.GetByID(*s.db, detail.ItemID)
@@ -73,7 +74,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 			}
 
 			for _, promoDetail := range promo.Details {
-				printers = s.updatePrinters(printers, promoDetail.Variant.Product.Category)
+				printers = s.updatePrinters(printers, promoDetail.Product.Category)
 			}
 
 			orderDetail.ItemName = promo.Name

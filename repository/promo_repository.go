@@ -27,7 +27,7 @@ func GetPromoRepository() PromoRepository {
 
 func (repo *PromoRepositoryImpl) GetByID(db gorm.DB, id uint) (model.Promo, error) {
 	var data model.Promo
-	err := db.Preload("PromoDetails").Preload("PromoDetails.Variant").Preload("PromoDetails.Variant.Product").First(&data, id).Error
+	err := db.Preload("PromoDetails").Preload("PromoDetails.Variant").Preload("PromoDetails.Product").First(&data, id).Error
 	return data, err
 }
 
