@@ -30,8 +30,12 @@ var BaseSvc BaseService
 
 func GetBaseService() BaseService {
 	return &BaseServiceImpl{
-		orderRepo: repository.GetOrderRepository(),
-		db:        config.DB,
+		orderRepo:   repository.GetOrderRepository(),
+		printerRepo: repository.GetPrinterRepository(),
+		productRepo: repository.GetProductRepository(),
+		variantRepo: repository.GetVariantRepository(),
+		promoRepo:   repository.GetPromoRepository(),
+		db:          config.DB,
 	}
 }
 
