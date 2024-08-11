@@ -27,7 +27,7 @@ func GetOrderRepository() OrderRepository {
 
 func (repo *OrderRepositoryImpl) GetByID(db *gorm.DB, id uint) (model.Order, error) {
 	var data model.Order
-	err := db.Preload("Table").First(&data, id).Error
+	err := db.Preload("Details").Preload("Table").First(&data, id).Error
 	return data, err
 }
 
