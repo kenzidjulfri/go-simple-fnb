@@ -10,6 +10,6 @@ func InitRoutes(router *gin.Engine) {
 	{
 		h := handler.NewBaseHandler()
 		route.POST("/order", h.Order)
-		route.GET("/bill/:tableId", h.Bill)
+		route.GET("/bill/:id", h.Bill)
 	}
 }
