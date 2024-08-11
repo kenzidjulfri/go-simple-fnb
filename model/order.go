@@ -4,10 +4,11 @@ import "gorm.io/gorm"
 
 type Order struct {
 	gorm.Model
-	ID      uint          `gorm:"primaryKey"`
-	TableID uint          `gorm:"type:bigint"`
-	Table   Table         `gorm:"foreignKey:TableID"`
-	Details []OrderDetail `gorm:"foreignKey:OrderID"`
+	ID       uint          `gorm:"primaryKey"`
+	TableID  uint          `gorm:"type:bigint"`
+	Table    Table         `gorm:"foreignKey:TableID"`
+	Details  []OrderDetail `gorm:"foreignKey:OrderID"`
+	IsClosed bool          `gorm:"type:bool;default:false"`
 }
 
 type OrderDetail struct {
@@ -21,5 +22,4 @@ type OrderDetail struct {
 	BasePrice float64 `gorm:"type:numeric(10,2)"`
 	Qty       uint    `gorm:"type:smallint"`
 	SumPrice  float64 `gorm:"type:numeric(10,2)"`
-	IsClosed  bool    `gorm:"type:bool;default:false"`
 }
