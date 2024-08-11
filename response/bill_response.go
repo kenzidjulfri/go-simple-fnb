@@ -4,6 +4,7 @@ type BillResponse struct {
 	Table      string               `json:"table"`
 	Details    []BillDetailResponse `json:"details"`
 	TotalPrice float64              `json:"totalPrice"`
+	Printers   []Printer            `json:"printers"`
 }
 
 type BillDetailResponse struct {
