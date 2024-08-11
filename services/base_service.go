@@ -54,7 +54,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 
 		switch detail.ItemType {
 		case constant.ItemBase.String():
-			product, err := s.productRepo.GetByID(*s.db, detail.ItemID)
+			product, err := s.productRepo.GetByID(s.db, detail.ItemID)
 			if err != nil {
 				return nil, err
 			}
@@ -63,7 +63,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 			orderDetail.BasePrice = product.Price
 			printers = s.updatePrinters(printers, product.Category)
 		case constant.ItemVariant.String():
-			variant, err := s.variantRepo.GetByID(*s.db, detail.ItemID)
+			variant, err := s.variantRepo.GetByID(s.db, detail.ItemID)
 			if err != nil {
 				return nil, err
 			}
@@ -72,7 +72,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 			orderDetail.BasePrice = variant.Product.Price + variant.AdditionalPrice
 			printers = s.updatePrinters(printers, variant.Product.Category)
 		case constant.ItemPromo.String():
-			promo, err := s.promoRepo.GetByID(*s.db, detail.ItemID)
+			promo, err := s.promoRepo.GetByID(s.db, detail.ItemID)
 			if err != nil {
 				return nil, err
 			}
@@ -92,7 +92,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 	}
 
 	order.Details = orderDetails
-	err := s.orderRepo.Create(*s.db, order)
+	err := s.orderRepo.Create(s.db, order)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func checkCategory(categoryName string) *string {
 
 func (s *BaseServiceImpl) updatePrinters(printers map[string]string, usage string) map[string]string {
 	if checkCategory(usage) != nil {
-		printer, err := s.printerRepo.GetByUsage(*s.db, usage)
+		printer, err := s.printerRepo.GetByUsage(s.db, usage)
 		if err != nil {
 			return printers
 		}
@@ -136,12 +136,12 @@ func (s *BaseServiceImpl) updatePrinters(printers map[string]string, usage strin
 }
 
 func (s *BaseServiceImpl) GetBill(id uint) (*response.BillResponse, error) {
-	order, err := s.orderRepo.GetByID(*s.db, id)
+	order, err := s.orderRepo.GetByID(s.db, id)
 	if err != nil {
 		return nil, err
 	}
 
-	printer, err := s.printerRepo.GetByUsage(*s.db, "BILL")
+	printer, err := s.printerRepo.GetByUsage(s.db, "BILL")
 	if err != nil {
 		return nil, err
 	}

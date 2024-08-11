@@ -1,21 +1,23 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/kenzidjulfri/model"
 	"gorm.io/gorm"
 )
 
 // single responsibility principle
 type PrinterRepository interface {
-	GetByID(db gorm.DB, id uint) (model.Printer, error)
-	GetByUsage(db gorm.DB, usage string) (model.Printer, error)
-	Create(db gorm.DB, data *model.Printer) error
-	Update(db gorm.DB, data *model.Printer) error
-	Delete(db gorm.DB, id uint) error
-	Restore(db gorm.DB, id uint) error
+	GetByID(db *gorm.DB, id uint) (model.Printer, error)
+	GetByUsage(db *gorm.DB, usage string) (model.Printer, error)
+	Create(db *gorm.DB, data *model.Printer) error
+	Update(db *gorm.DB, data *model.Printer) error
+	Delete(db *gorm.DB, id uint) error
+	Restore(db *gorm.DB, id uint) error
 }
 
-var PrinterRepo PrinterRepository
+var PrinterRepo PrinterRepository = nil
 
 type PrinterRepositoryImpl struct{}
 
@@ -26,30 +28,33 @@ func GetPrinterRepository() PrinterRepository {
 	return PrinterRepo
 }
 
-func (repo *PrinterRepositoryImpl) GetByID(db gorm.DB, id uint) (model.Printer, error) {
+func (repo *PrinterRepositoryImpl) GetByID(db *gorm.DB, id uint) (model.Printer, error) {
 	var data model.Printer
 	err := db.First(&data, id).Error
 	return data, err
 }
 
-func (repo *PrinterRepositoryImpl) GetByUsage(db gorm.DB, usage string) (model.Printer, error) {
+func (repo *PrinterRepositoryImpl) GetByUsage(db *gorm.DB, usage string) (model.Printer, error) {
+	log.Println("*** test 1")
 	var data model.Printer
+	log.Println("*** test 2")
 	err := db.Where("usage = ?", usage).First(&data).Error
+	log.Println("*** test 3")
 	return data, err
 }
 
-func (repo *PrinterRepositoryImpl) Create(db gorm.DB, data *model.Printer) error {
+func (repo *PrinterRepositoryImpl) Create(db *gorm.DB, data *model.Printer) error {
 	return db.Create(&data).Error
 }
 
-func (repo *PrinterRepositoryImpl) Update(db gorm.DB, data *model.Printer) error {
+func (repo *PrinterRepositoryImpl) Update(db *gorm.DB, data *model.Printer) error {
 	return db.Save(&data).Error
 }
 
-func (repo *PrinterRepositoryImpl) Delete(db gorm.DB, id uint) error {
+func (repo *PrinterRepositoryImpl) Delete(db *gorm.DB, id uint) error {
 	return db.Delete(&model.Printer{}, id).Error
 }
 
-func (repo *PrinterRepositoryImpl) Restore(db gorm.DB, id uint) error {
+func (repo *PrinterRepositoryImpl) Restore(db *gorm.DB, id uint) error {
 	return db.Update("deleted_at", nil).Error
 }
