@@ -137,9 +137,20 @@ func (s *BaseServiceImpl) GetBill(tableId uint) (*response.BillResponse, error) 
 		return nil, err
 	}
 
+	printer, err := s.printerRepo.GetByUsage(*s.db, "BILL")
+	if err != nil {
+		return nil, err
+	}
+
 	billDetails := []response.BillDetailResponse{}
 	bill := response.BillResponse{
 		Table: order.Table.Name,
+		Printers: []response.Printer{
+			{
+				Code: printer.Code,
+				Name: printer.Name,
+			},
+		},
 	}
 
 	var totalPrice float64 = 0
