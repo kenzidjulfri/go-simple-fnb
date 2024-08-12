@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"log"
 
 	"github.com/kenzidjulfri/config"
 	"github.com/kenzidjulfri/constant"
@@ -106,6 +107,7 @@ func (s *BaseServiceImpl) CreateOrder(req request.OrderRequest) (*response.Order
 	}
 
 	resp := &response.OrderResponse{
+		OrderID:  order.ID,
 		Printers: respPrinters,
 	}
 
@@ -159,6 +161,7 @@ func (s *BaseServiceImpl) GetBill(id uint) (*response.BillResponse, error) {
 
 	var totalPrice float64 = 0
 	for _, detail := range order.Details {
+		log.Printf("detail: %v", detail)
 		billDetails = append(billDetails, response.BillDetailResponse{
 			ItemName:  detail.ItemName,
 			Qty:       detail.Qty,
