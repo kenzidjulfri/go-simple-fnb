@@ -16,6 +16,7 @@ import (
 type BaseService interface {
 	CreateOrder(req request.OrderRequest) (*response.OrderResponse, error)
 	GetBill(tableId uint) (*response.BillResponse, error)
+	GetMenu() ([]response.MenuResponse, error)
 }
 
 type BaseServiceImpl struct {
@@ -176,4 +177,91 @@ func (s *BaseServiceImpl) GetBill(id uint) (*response.BillResponse, error) {
 	bill.TotalPrice = totalPrice
 
 	return &bill, nil
+}
+
+func (s *BaseServiceImpl) GetMenu() ([]response.MenuResponse, error) {
+	menus := []response.MenuResponse{}
+	foods, err := s.productRepo.GetAllByCategory(s.db, constant.CategoryFood.String())
+	if err != nil {
+		return nil, err
+	}
+
+	foodItems := []response.SubMenuResponse{}
+	for _, food := range foods {
+		if food.Variants != nil && len(food.Variants) > 0 {
+			for _, variant := range food.Variants {
+				foodItems = append(foodItems, response.SubMenuResponse{
+					ItemID:    variant.ID,
+					ItemName:  variant.Name,
+					ItemType:  constant.ItemVariant.String(),
+					BasePrice: food.Price + variant.AdditionalPrice,
+				})
+			}
+		} else {
+			foodItems = append(foodItems, response.SubMenuResponse{
+				ItemID:    food.ID,
+				ItemName:  food.Name,
+				ItemType:  constant.ItemBase.String(),
+				BasePrice: food.Price,
+			})
+		}
+	}
+
+	menus = append(menus, response.MenuResponse{
+		Category: constant.CategoryFood.String(),
+		Items:    foodItems,
+	})
+
+	beverages, err := s.productRepo.GetAllByCategory(s.db, constant.CategoryBeverage.String())
+	if err != nil {
+		return nil, err
+	}
+
+	beverageItems := []response.SubMenuResponse{}
+	for _, beverage := range beverages {
+		if beverage.Variants != nil && len(beverage.Variants) > 0 {
+			for _, variant := range beverage.Variants {
+				beverageItems = append(beverageItems, response.SubMenuResponse{
+					ItemID:    variant.ID,
+					ItemName:  variant.Name,
+					ItemType:  constant.ItemVariant.String(),
+					BasePrice: beverage.Price + variant.AdditionalPrice,
+				})
+			}
+		} else {
+			beverageItems = append(beverageItems, response.SubMenuResponse{
+				ItemID:    beverage.ID,
+				ItemName:  beverage.Name,
+				ItemType:  constant.ItemBase.String(),
+				BasePrice: beverage.Price,
+			})
+		}
+	}
+
+	menus = append(menus, response.MenuResponse{
+		Category: constant.CategoryBeverage.String(),
+		Items:    beverageItems,
+	})
+
+	promos, err := s.promoRepo.GetAll(s.db)
+	if err != nil {
+		return nil, err
+	}
+
+	promoItems := []response.SubMenuResponse{}
+	for _, promo := range promos {
+		promoItems = append(promoItems, response.SubMenuResponse{
+			ItemID:    promo.ID,
+			ItemName:  promo.Name,
+			ItemType:  constant.ItemPromo.String(),
+			BasePrice: promo.Price,
+		})
+	}
+
+	menus = append(menus, response.MenuResponse{
+		Category: "PROMO",
+		Items:    promoItems,
+	})
+
+	return menus, nil
 }

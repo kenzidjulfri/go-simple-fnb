@@ -15,5 +15,6 @@ func InitRoutes(router *gin.Engine) {
 		h := handler.NewBaseHandler()
 		route.POST("/order", h.Order)
 		route.GET("/bill/:id", h.Bill)
+		route.GET("/menu", h.Menu)
 	}
 }

@@ -51,6 +51,15 @@ definitions:
       totalPrice:
         type: number
     type: object
+  response.MenuResponse:
+    properties:
+      category:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/response.SubMenuResponse'
+        type: array
+    type: object
   response.OrderResponse:
     properties:
       orderId:
@@ -65,6 +74,17 @@ definitions:
       code:
         type: string
       name:
+        type: string
+    type: object
+  response.SubMenuResponse:
+    properties:
+      basePrice:
+        type: number
+      itemId:
+        type: integer
+      itemName:
+        type: string
+      itemType:
         type: string
     type: object
 host: localhost:8080
@@ -98,6 +118,17 @@ paths:
           schema:
             $ref: '#/definitions/response.BillResponse'
       summary: Retrieves an order by its order id
+  /menu:
+    get:
+      description: get menu and the item's details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MenuResponse'
+      summary: Retrieves menu
   /order:
     post:
       consumes:

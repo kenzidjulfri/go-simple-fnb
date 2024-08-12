@@ -50,6 +50,23 @@ const docTemplate = `{
                 }
             }
         },
+        "/menu": {
+            "get": {
+                "description": "get menu and the item's details",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Retrieves menu",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.MenuResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/order": {
             "post": {
                 "description": "create a new order by providing the table id and the details of the order, if success returns the newly created order id and a list of printers",
@@ -160,6 +177,20 @@ const docTemplate = `{
                 }
             }
         },
+        "response.MenuResponse": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.SubMenuResponse"
+                    }
+                }
+            }
+        },
         "response.OrderResponse": {
             "type": "object",
             "properties": {
@@ -181,6 +212,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.SubMenuResponse": {
+            "type": "object",
+            "properties": {
+                "basePrice": {
+                    "type": "number"
+                },
+                "itemId": {
+                    "type": "integer"
+                },
+                "itemName": {
+                    "type": "string"
+                },
+                "itemType": {
                     "type": "string"
                 }
             }

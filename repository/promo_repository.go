@@ -7,6 +7,7 @@ import (
 
 // single responsibility principle
 type PromoRepository interface {
+	GetAll(db *gorm.DB) ([]model.Promo, error)
 	GetByID(db *gorm.DB, id uint) (model.Promo, error)
 	Create(db *gorm.DB, data *model.Promo) error
 	Update(db *gorm.DB, data *model.Promo) error
@@ -23,6 +24,12 @@ func GetPromoRepository() PromoRepository {
 		PromoRepo = &PromoRepositoryImpl{}
 	}
 	return PromoRepo
+}
+
+func (repo *PromoRepositoryImpl) GetAll(db *gorm.DB) ([]model.Promo, error) {
+	var data []model.Promo
+	err := db.Find(&data).Error
+	return data, err
 }
 
 func (repo *PromoRepositoryImpl) GetByID(db *gorm.DB, id uint) (model.Promo, error) {

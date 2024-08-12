@@ -70,3 +70,19 @@ func (h *BaseHandler) Bill(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "data found", "data": &resp})
 }
+
+// Menu godoc
+// @Summary Retrieves menu
+// @Description get menu and the item's details
+// @Produce json
+// @Success 200 {object} response.MenuResponse
+// @Router /menu [get]
+func (h *BaseHandler) Menu(c *gin.Context) {
+	resp, err := h.baseService.GetMenu()
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "data found", "data": &resp})
+}

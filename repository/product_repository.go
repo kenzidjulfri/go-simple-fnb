@@ -7,6 +7,7 @@ import (
 
 // single responsibility principle
 type ProductRepository interface {
+	GetAllByCategory(db *gorm.DB, category string) ([]model.Product, error)
 	GetByID(db *gorm.DB, id uint) (model.Product, error)
 	Create(db *gorm.DB, data *model.Product) error
 	Update(db *gorm.DB, data *model.Product) error
@@ -23,6 +24,12 @@ func GetProductRepository() ProductRepository {
 		ProductRepo = &ProductRepositoryImpl{}
 	}
 	return ProductRepo
+}
+
+func (repo *ProductRepositoryImpl) GetAllByCategory(db *gorm.DB, category string) ([]model.Product, error) {
+	var data []model.Product
+	err := db.Preload("Variants").Where("category = ?", category).Find(&data).Error
+	return data, err
 }
 
 func (repo *ProductRepositoryImpl) GetByID(db *gorm.DB, id uint) (model.Product, error) {
