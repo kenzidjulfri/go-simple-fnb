@@ -18,8 +18,19 @@ func NewBaseHandler() *BaseHandler {
 	return &BaseHandler{
 		baseService: services.GetBaseService(),
 	}
+
 }
 
+// @BasePath /api/v1
+
+// Order godoc
+// @Summary Create a new order
+// @Description create a new order by providing the table id and the details of the order, if success returns the newly created order id and a list of printers
+// @Param order body request.OrderRequest true "order request"
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.OrderResponse
+// @Router /order [post]
 func (h *BaseHandler) Order(c *gin.Context) {
 	var req request.OrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -37,6 +48,13 @@ func (h *BaseHandler) Order(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "order created successfully", "data": &resp})
 }
 
+// Bill godoc
+// @Summary Retrieves an order by its order id
+// @Description get order by its id, returning the order details and the printers
+// @Param id path int true "Order ID"
+// @Produce json
+// @Success 200 {object} response.BillResponse
+// @Router /bill/{id} [get]
 func (h *BaseHandler) Bill(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

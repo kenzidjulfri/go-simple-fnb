@@ -1,0 +1,122 @@
+basePath: /api
+definitions:
+  request.OrderDetailRequest:
+    properties:
+      itemId:
+        type: integer
+      itemType:
+        type: string
+      qty:
+        type: integer
+    required:
+    - itemId
+    - itemType
+    - qty
+    type: object
+  request.OrderRequest:
+    properties:
+      details:
+        items:
+          $ref: '#/definitions/request.OrderDetailRequest'
+        type: array
+      tableId:
+        type: integer
+    required:
+    - details
+    - tableId
+    type: object
+  response.BillDetailResponse:
+    properties:
+      basePrice:
+        type: number
+      itemName:
+        type: string
+      qty:
+        type: integer
+      sumPrice:
+        type: number
+    type: object
+  response.BillResponse:
+    properties:
+      details:
+        items:
+          $ref: '#/definitions/response.BillDetailResponse'
+        type: array
+      printers:
+        items:
+          $ref: '#/definitions/response.Printer'
+        type: array
+      table:
+        type: string
+      totalPrice:
+        type: number
+    type: object
+  response.OrderResponse:
+    properties:
+      orderId:
+        type: integer
+      printers:
+        items:
+          $ref: '#/definitions/response.Printer'
+        type: array
+    type: object
+  response.Printer:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Simple F&B API
+  version: "1.0"
+paths:
+  /bill/{id}:
+    get:
+      description: get order by its id, returning the order details and the printers
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BillResponse'
+      summary: Retrieves an order by its order id
+  /order:
+    post:
+      consumes:
+      - application/json
+      description: create a new order by providing the table id and the details of
+        the order, if success returns the newly created order id and a list of printers
+      parameters:
+      - description: order request
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+      summary: Create a new order
+swagger: "2.0"
